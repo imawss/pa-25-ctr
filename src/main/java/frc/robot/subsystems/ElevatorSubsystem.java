@@ -1,6 +1,8 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
@@ -9,21 +11,28 @@ import frc.robot.Constants;
 
 public class ElevatorSubsystem extends SubsystemBase {
 
-    SparkMax masterElevatorMotor;
-    SparkMaxConfig masterElevatorMotorConfig;
+    SparkMax masterMotor;
+    SparkMaxConfig masterMotorConfig;
 
-    SparkMax slaveElevatorMotor;
-    SparkMaxConfig slaveElevatorMotorConfig;
+    SparkMax slaveMotor;
+    SparkMaxConfig slaveMotorConfig;
+
+    RelativeEncoder masterMotorEncoder;        
+    RelativeEncoder slaveMotorEncoder;        
 
     public ElevatorSubsystem(int masterMotorID, int slaveMotorID, boolean isMotorsInverted){
-        masterElevatorMotor = new SparkMax(masterMotorID, MotorType.kBrushless);
-        masterElevatorMotorConfig = new SparkMaxConfig();
-        masterElevatorMotorConfig.inverted(isMotorsInverted);
+        masterMotor = new SparkMax(masterMotorID, MotorType.kBrushless);
+        masterMotorConfig = new SparkMaxConfig();
+        masterMotorConfig.inverted(isMotorsInverted);
+        masterMotor.configure(masterMotorConfig, SparkMax.ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
+        slaveMotor = new SparkMax(slaveMotorID, MotorType.kBrushless);
+        slaveMotorConfig = new SparkMaxConfig();
+        slaveMotorConfig.inverted(isMotorsInverted);
+        slaveMotor.configure(slaveMotorConfig, SparkMax.ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-        slaveElevatorMotor = new SparkMax(slaveMotorID, MotorType.kBrushless);
-        slaveElevatorMotorConfig = new SparkMaxConfig();
-        slaveElevatorMotorConfig.inverted(isMotorsInverted);
+        masterMotorEncoder = masterMotor.getEncoder();
+        slaveMotorEncoder = slaveMotor.getEncoder();
     }
 
     public void resetElevator(){
