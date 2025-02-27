@@ -19,7 +19,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         masterElevatorMotor = new SparkMax(masterMotorID, MotorType.kBrushless);
         masterElevatorMotorConfig = new SparkMaxConfig();
         masterElevatorMotorConfig.inverted(isMotorsInverted);
-        
+
 
         slaveElevatorMotor = new SparkMax(slaveMotorID, MotorType.kBrushless);
         slaveElevatorMotorConfig = new SparkMaxConfig();
