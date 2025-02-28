@@ -42,8 +42,8 @@ public class RobotContainer {
         // and Y is defined as to the left according to WPILib convention.
         drivetrain.setDefaultCommand(
                 drivetrain.applyRequest(() -> {
-                    return drive.withVelocityX(-joystick.getLeftY() * MaxSpeed)
-                            .withVelocityY(-joystick.getLeftX() * MaxSpeed)
+                    return drive.withVelocityX(joystick.getLeftY() * MaxSpeed)
+                            .withVelocityY(joystick.getLeftX() * MaxSpeed)
                             .withRotationalRate(-joystick.getHID().getRawAxis(4) * MaxAngularRate);
                 }));
 

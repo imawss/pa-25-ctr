@@ -29,6 +29,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         slaveMotor = new SparkMax(slaveMotorID, MotorType.kBrushless);
         slaveMotorConfig = new SparkMaxConfig();
         slaveMotorConfig.inverted(isMotorsInverted);
+        slaveMotorConfig.follow(masterMotorID);
         slaveMotor.configure(slaveMotorConfig, SparkMax.ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         masterMotorEncoder = masterMotor.getEncoder();
@@ -36,6 +37,8 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
 
     public void resetElevator(){
+        masterMotorEncoder.setPosition(0);
+        slaveMotorEncoder.setPosition(0);
     }
 
     public void setHeight(double meters){
