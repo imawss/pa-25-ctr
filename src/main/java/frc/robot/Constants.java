@@ -17,5 +17,11 @@ public class Constants {
         //IDs
         public static final int MASTER_ELEVATOR_MOTOR_PORT = 0;
         public static final int SLAVE_ELEVATOR_MOTOR_PORT = 0;
+        public static final int TOP_LIMIT_SWITCH_ID = 0;
+        public static final int BOTTOM_LIMIT_SWITCH_ID = 0;
+
+        public static final double kP = 0;
+        public static final double kI = 0;  
+        public static final double kD = 0;
     }
 }

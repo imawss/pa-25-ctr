@@ -2,9 +2,6 @@ package frc.robot.subsystems;
 
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.PersistMode;
-
-import java.lang.invoke.ConstantCallSite;
-
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
@@ -14,23 +11,20 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.commands.GripperCommand;
 
 public class ElevatorSubsystem extends SubsystemBase {
-
     SparkMax masterMotor;
     SparkMaxConfig masterMotorConfig;
-
     SparkMax slaveMotor;
     SparkMaxConfig slaveMotorConfig;
-
-    RelativeEncoder masterMotorEncoder;        
-    RelativeEncoder slaveMotorEncoder;      
-
+    RelativeEncoder masterMotorEncoder;
+    RelativeEncoder slaveMotorEncoder;
     DigitalInput topLimitSwitch;
     DigitalInput bottomLimitSwitch;
-    
     PIDController pidController;
     double targetHeight = 0.0;
+    boolean isElevatorAtZero = true;
 
     public ElevatorSubsystem(int masterMotorID, int slaveMotorID, boolean isMotorsInverted, double kP, double kI, double kD, int topLimitSwitchID, int bottomLimitSwitchID) {
         masterMotor = new SparkMax(masterMotorID, MotorType.kBrushless);
@@ -42,65 +36,68 @@ public class ElevatorSubsystem extends SubsystemBase {
         slaveMotor = new SparkMax(slaveMotorID, MotorType.kBrushless);
         slaveMotorConfig = new SparkMaxConfig();
         slaveMotorConfig.inverted(isMotorsInverted);
-        masterMotorConfig.idleMode(IdleMode.kBrake);
+        slaveMotorConfig.idleMode(IdleMode.kBrake);
         slaveMotorConfig.follow(masterMotorID);
         slaveMotor.configure(slaveMotorConfig, SparkMax.ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         masterMotorEncoder = masterMotor.getEncoder();
         slaveMotorEncoder = slaveMotor.getEncoder();
-        
+
         topLimitSwitch = new DigitalInput(topLimitSwitchID);
         bottomLimitSwitch = new DigitalInput(bottomLimitSwitchID);
 
         pidController = new PIDController(kP, kI, kD);
     }
 
-    public void resetElevator(){
+    public void resetElevator() {
         masterMotorEncoder.setPosition(0);
         slaveMotorEncoder.setPosition(0);
+        isElevatorAtZero = true;
         System.out.println("Elevator has been reset");
     }
 
-    public void setHeight(double meters){
-        targetHeight = meters;
-    }
-
-    public double getHeight(){
+    public double getHeight() {
         return (masterMotorEncoder.getPosition() / Constants.ElevatorSystem.kGearRatio) * Constants.ElevatorSystem.gearCircumference;
     }
 
-    public void periodic(){
+    public void setHeight(double meters) {
+        targetHeight = meters;
+        isElevatorAtZero = false;
+    }
+
+    public double getSpeed(){
+        return (masterMotorEncoder.getVelocity() / Constants.ElevatorSystem.kGearRatio) * Constants.ElevatorSystem.gearCircumference;
+    }
+
+    public void setSpeed(double speed){
+        masterMotor.set(speed);
+    }
+
+    public void periodic() {
         double output = pidController.calculate(masterMotorEncoder.getPosition(), targetHeight);
+        
+        if (Math.abs(getHeight() - targetHeight) < 0.01) { 
+            new GripperCommand().schedule(); 
+        }
+
         if (getSpeed() > 0) {
             if (topLimitSwitch.get()) {
-                // We are going up and top limit is tripped so stop
                 masterMotor.set(0);
+                setHeight(0); 
             } else {
-                // We are going up but top limit is not tripped so go at commanded speed
                 masterMotor.set(output);
             }
         } else {
             if (bottomLimitSwitch.get()) {
-                // We are going down and bottom limit is tripped so stop
                 masterMotor.set(0);
+                resetElevator();
             } else {
-                // We are going down but bottom limit is not tripped so go at commanded speed
                 masterMotor.set(output);
             }
         }
-        masterMotor.set(output);
     }
 
-    public double getSpeed () {
-        return (masterMotorEncoder.getVelocity() * Constants.ElevatorSystem.gearCircumference) / Constants.ElevatorSystem.kGearRatio;
+    public boolean isElevatorAtZero() {
+        return isElevatorAtZero;
     }
-
-    public void setSpeed(double speed) {
-        masterMotor.set(speed);
-    }
-
-    public void stop() {
-        masterMotor.set(0);
-    }
-    
 }
