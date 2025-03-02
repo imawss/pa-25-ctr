@@ -13,6 +13,7 @@ import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -44,7 +45,7 @@ public class RobotContainer {
     public RobotContainer() {
         configureBindings();
     }
-
+    
     private void configureBindings() {
         // Note that X is defined as forward according to WPILib convention,
         // and Y is defined as to the left according to WPILib convention.
@@ -70,6 +71,16 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        return Commands.print("No autonomous command configured");
+        try {
+            // Load the path you want to follow using its name in the GUI
+            PathPlannerPath path = PathPlannerPath.fromPathFile("Test");
+
+            // Create a path following command using AutoBuilder. This will also trigger
+            // event markers.
+            return AutoBuilder.followPath(path);
+        } catch (Exception e) {
+            DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
+            return Commands.none();
+        }
     }
 }
