@@ -27,11 +27,13 @@ public class Constants {
 
     public class GripperSystem {
         // MEAUERMENTS (cm)
-        public static final double kGearRatio = 0;
-        public static final double kMaxRotation = 0;
+        public static final double kGearRatio = 50;
+        public static final double kMaxDegree = 0;
         public static final double kIntakeRotation = 50;
-        public static final double kMinRotation = 50;
+        public static final double kShootingRotation = 50;
+        public static final double kMinDegree = 50;
         public static final double gearCircumference = Math.PI * 4;
+        public static final double kOffset = 0;
         // BUTTONS
         public static final int IntakeButtonID = 0;
         public static final int ShootButtonID = 0;
@@ -42,5 +44,12 @@ public class Constants {
         public static final int ROTATION_MOTOR_PORT = 0;
         public static final int CANCODER_ID = 0;
         public static final int LIMIT_SWITCH_ID = 0;
+        //PID
+        public static final double kP = 0;
+        public static final double kI = 0;
+        public static final double kD = 0;
+        //boolean
+        public static final boolean kIsIntakeInverted = false;
+        public static final boolean kIsRotationInverted = false;
     }
 }

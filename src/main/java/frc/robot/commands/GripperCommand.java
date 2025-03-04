@@ -1,31 +1,42 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
+import frc.robot.GripperPosition;
+import frc.robot.subsystems.GripperSubsystem;
 
 public class GripperCommand extends Command {
+    private final GripperSubsystem gripper;
+    private final GripperPosition pos;
 
-    public GripperCommand() {
+    public GripperCommand(GripperPosition position) {
+        gripper = new GripperSubsystem(Constants.GripperSystem.INTAKE_MOTOR_PORT,
+                Constants.GripperSystem.ROTATION_MOTOR_PORT,
+                Constants.GripperSystem.CANCODER_ID, Constants.GripperSystem.kIsIntakeInverted,
+                Constants.GripperSystem.kIsRotationInverted);
+        pos = position;
+        addRequirements(gripper);
     }
 
-    // Called when the command is initially scheduled.
     @Override
     public void initialize() {
+        gripper.goToPreset(pos);
     }
 
-    // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
+
     }
 
-    // Called once the command ends or is interrupted.
-    @Override
-    public void end(boolean interrupted) {
-    }
-
-    // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-        return false;
+        return Math.abs(gripper.getRotationAngle() - pos.getAngle()) < 2.0;
     }
-    
+
+    @Override
+    public void end(boolean interrupted) {
+        if (interrupted) {
+            gripper.stop(); 
+        }
+    }
 }

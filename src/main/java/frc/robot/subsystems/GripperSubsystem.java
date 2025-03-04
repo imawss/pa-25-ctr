@@ -1,36 +1,42 @@
 package frc.robot.subsystems;
 
-import static edu.wpi.first.units.Units.FeetPerSecond;
+import static edu.wpi.first.units.Units.Rotation;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
-import com.revrobotics.RelativeEncoder;
-import com.revrobotics.servohub.ServoHub.ResetMode;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
+import frc.robot.GripperPosition;
 
 public class GripperSubsystem extends SubsystemBase {
 
-    TalonFX intakeMotor;
-    TalonFXConfiguration intakeMotorConfig;
-    RelativeEncoder intakeMotorEncoder;
+    private TalonFX intakeMotor;
+    private TalonFXConfiguration intakeMotorConfig;
 
-    SparkMax rotationMotor;
-    SparkMaxConfig rotationMotorConfig;
-    CANcoder rotationMotorEncoder;
+    private SparkMax rotationMotor;
+    private SparkMaxConfig rotationMotorConfig;
+    private CANcoder rotationMotorEncoder;
 
-    public GripperSubsystem(int intakeMotorPort,
-            int rotationMotorPort,
-            int rotationEncoderID,
-            boolean isIntakeInverted,
+    private PIDController pidController;
+
+    private final double kP = Constants.GripperSystem.kP;
+    private final double kI = Constants.GripperSystem.kI;
+    private final double kD = Constants.GripperSystem.kD;
+    private final double minAngle = Constants.GripperSystem.kMinDegree;
+    private final double maxAngle = Constants.GripperSystem.kMaxDegree;
+    private final double offset = Constants.GripperSystem.kOffset;
+
+    public GripperSubsystem(int intakeMotorPort, int rotationMotorPort, int rotationEncoderID, boolean isIntakeInverted,
             boolean isRotationInverted) {
-
         intakeMotor = new TalonFX(intakeMotorPort);
         intakeMotorConfig = new TalonFXConfiguration();
         intakeMotorConfig.MotorOutput.Inverted = isIntakeInverted ? InvertedValue.CounterClockwise_Positive
@@ -40,21 +46,49 @@ public class GripperSubsystem extends SubsystemBase {
         rotationMotor = new SparkMax(rotationMotorPort, MotorType.kBrushless);
         rotationMotorConfig = new SparkMaxConfig();
         rotationMotorConfig.inverted(isRotationInverted);
+        rotationMotorConfig.idleMode(IdleMode.kBrake);
         rotationMotor.configure(rotationMotorConfig, SparkMax.ResetMode.kResetSafeParameters,
                 PersistMode.kPersistParameters);
-        
+
         rotationMotorEncoder = new CANcoder(rotationEncoderID);
+
+        pidController = new PIDController(kP, kI, kD);
+        pidController.setTolerance(2.0);
     }
 
-    public void setIntakeSpeed(double speed) {
-        intakeMotor.set(speed);
+    public double getRotationAngle() {
+        double rawAngle = rotationMotorEncoder.getPosition().getValue().in(Rotation) * 360.0;
+        return (rawAngle / Constants.GripperSystem.kGearRatio) + offset;
+    }
+
+    public void moveToAngle(double targetAngle) {
+        targetAngle = Math.max(minAngle, Math.min(targetAngle, maxAngle));
+
+        double currentAngle = getRotationAngle();
+        double targetEncoderAngle = (targetAngle - offset) * Constants.GripperSystem.kGearRatio;
+        double output = pidController.calculate((currentAngle - offset) * Constants.GripperSystem.kGearRatio, targetEncoderAngle);
+
+        rotationMotor.set(output);
     }
 
     public void setRotationSpeed(double speed) {
-        rotationMotor.set(speed);
+        double currentAngle = getRotationAngle();
+        if ((speed > 0 && currentAngle >= maxAngle) || (speed < 0 && currentAngle <= minAngle)) {
+            rotationMotor.set(0);
+        } else {
+            rotationMotor.set(speed);
+        }
     }
-    
-    public void stop(){
+
+    public void setIntakeSpeed(double speed){
+        intakeMotor.set(speed);
+    }
+
+    public void goToPreset(GripperPosition position) {
+        moveToAngle(position.getAngle());
+    }
+
+    public void stop() {
         intakeMotor.set(0);
         rotationMotor.set(0);
     }
