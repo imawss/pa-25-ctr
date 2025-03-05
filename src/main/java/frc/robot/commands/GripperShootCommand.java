@@ -10,8 +10,8 @@ import frc.robot.subsystems.GripperSubsystem;
 public class GripperShootCommand extends SequentialCommandGroup {
     public GripperShootCommand(GripperSubsystem gripper) {
         addCommands(
-                new InstantCommand(() -> gripper.setIntakeSpeed(0.5)),
+                new InstantCommand(() -> gripper.setIntakeSpeed(0.5)).withTimeout(0.5),
                 new WaitCommand(0.5),
-                new InstantCommand(() -> gripper.stop()));
+                new InstantCommand(() -> gripper.stop()).withTimeout(0.1));
     }
 }
