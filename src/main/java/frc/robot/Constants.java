@@ -15,8 +15,8 @@ public class Constants {
         public static final int L3ButtonID = 0;
         public static final int L4ButtonID = 0;
         // IDs
-        public static final int MASTER_ELEVATOR_MOTOR_PORT = 0;
-        public static final int SLAVE_ELEVATOR_MOTOR_PORT = 0;
+        public static final int MASTER_ELEVATOR_MOTOR_PORT = 50;
+        public static final int SLAVE_ELEVATOR_MOTOR_PORT = 51;
         public static final int TOP_LIMIT_SWITCH_ID = 0;
         public static final int BOTTOM_LIMIT_SWITCH_ID = 0;
         // PID
@@ -40,10 +40,9 @@ public class Constants {
         public static final int ManuelIntakeID = 0; // trigger buttons
         public static final int ManuelShootID = 0; // trigger buttons
         // IDs
-        public static final int INTAKE_MOTOR_PORT = 0;
-        public static final int ROTATION_MOTOR_PORT = 0;
-        public static final int CANCODER_ID = 0;
-        public static final int LIMIT_SWITCH_ID = 0;
+        public static final int INTAKE_MOTOR_PORT = 45;
+        public static final int ROTATION_MOTOR_PORT = 42;
+        public static final int LIMIT_SWITCH_ID = 44;
         //PID
         public static final double kP = 0;
         public static final double kI = 0;
@@ -51,5 +50,10 @@ public class Constants {
         //boolean
         public static final boolean kIsIntakeInverted = false;
         public static final boolean kIsRotationInverted = false;
+    }
+
+    public class OI {
+        public static final int kDriverControllerPort = 0;
+        public static final int kOperatorControllerPort = 1;
     }
 }

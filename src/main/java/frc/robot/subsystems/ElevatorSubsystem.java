@@ -14,6 +14,7 @@ import frc.robot.Constants;
 import frc.robot.ElevatorPosition;
 import frc.robot.commands.GripperCommand;
 
+@SuppressWarnings("unused")
 public class ElevatorSubsystem extends SubsystemBase {
     SparkMax masterMotor;
     SparkMaxConfig masterMotorConfig;
@@ -27,7 +28,9 @@ public class ElevatorSubsystem extends SubsystemBase {
     double targetHeight = 0.0;
     boolean isElevatorAtZero = true;
 
-    public ElevatorSubsystem(int masterMotorID, int slaveMotorID, boolean isMotorsInverted, double kP, double kI,
+    private static ElevatorSubsystem instance;
+
+    private ElevatorSubsystem(int masterMotorID, int slaveMotorID, boolean isMotorsInverted, double kP, double kI,
             double kD, int topLimitSwitchID, int bottomLimitSwitchID) {
         masterMotor = new SparkMax(masterMotorID, MotorType.kBrushless);
         masterMotorConfig = new SparkMaxConfig();
@@ -50,6 +53,16 @@ public class ElevatorSubsystem extends SubsystemBase {
         bottomLimitSwitch = new DigitalInput(bottomLimitSwitchID);
 
         pidController = new PIDController(kP, kI, kD);
+    }
+
+    public static ElevatorSubsystem getInstance() {
+        if (instance == null) {
+            instance = new ElevatorSubsystem(Constants.ElevatorSystem.MASTER_ELEVATOR_MOTOR_PORT,
+                    Constants.ElevatorSystem.SLAVE_ELEVATOR_MOTOR_PORT, false, Constants.ElevatorSystem.kP,
+                    Constants.ElevatorSystem.kI, Constants.ElevatorSystem.kD, Constants.ElevatorSystem.TOP_LIMIT_SWITCH_ID,
+                    Constants.ElevatorSystem.BOTTOM_LIMIT_SWITCH_ID);
+        }
+        return instance;
     }
 
     public void resetElevator() {

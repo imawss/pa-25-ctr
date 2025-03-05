@@ -5,15 +5,12 @@ import frc.robot.Constants;
 import frc.robot.GripperPosition;
 import frc.robot.subsystems.GripperSubsystem;
 
+@SuppressWarnings("unused")
 public class GripperCommand extends Command {
-    private final GripperSubsystem gripper;
+    private final GripperSubsystem gripper = GripperSubsystem.getInstance();
     private final GripperPosition pos;
 
     public GripperCommand(GripperPosition position) {
-        gripper = new GripperSubsystem(Constants.GripperSystem.INTAKE_MOTOR_PORT,
-                Constants.GripperSystem.ROTATION_MOTOR_PORT,
-                Constants.GripperSystem.CANCODER_ID, Constants.GripperSystem.kIsIntakeInverted,
-                Constants.GripperSystem.kIsRotationInverted);
         pos = position;
         addRequirements(gripper);
     }

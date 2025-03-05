@@ -1,22 +1,16 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants;
 import frc.robot.ElevatorPosition;
 import frc.robot.subsystems.ElevatorSubsystem;
 
+@SuppressWarnings("unused")
 public class ElevatorCommand extends Command {
 
-    ElevatorSubsystem elevatorSubsystem;
+    ElevatorSubsystem elevatorSubsystem = ElevatorSubsystem.getInstance();
     ElevatorPosition pos;
 
     public ElevatorCommand(ElevatorPosition height) {
-        elevatorSubsystem = new ElevatorSubsystem(Constants.ElevatorSystem.MASTER_ELEVATOR_MOTOR_PORT,
-                Constants.ElevatorSystem.SLAVE_ELEVATOR_MOTOR_PORT,
-                false, Constants.ElevatorSystem.kP,
-                Constants.ElevatorSystem.kI,
-                Constants.ElevatorSystem.kD, Constants.ElevatorSystem.TOP_LIMIT_SWITCH_ID,
-                Constants.ElevatorSystem.BOTTOM_LIMIT_SWITCH_ID);
         addRequirements(elevatorSubsystem);
         pos = height;
     }

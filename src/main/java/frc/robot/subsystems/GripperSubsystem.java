@@ -7,6 +7,7 @@ import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
@@ -17,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.GripperPosition;
 
+@SuppressWarnings("unused")
 public class GripperSubsystem extends SubsystemBase {
 
     private TalonFX intakeMotor;
@@ -24,7 +26,7 @@ public class GripperSubsystem extends SubsystemBase {
 
     private SparkMax rotationMotor;
     private SparkMaxConfig rotationMotorConfig;
-    private CANcoder rotationMotorEncoder;
+    private RelativeEncoder rotationMotorEncoder;
 
     private PIDController pidController;
 
@@ -35,7 +37,9 @@ public class GripperSubsystem extends SubsystemBase {
     private final double maxAngle = Constants.GripperSystem.kMaxDegree;
     private final double offset = Constants.GripperSystem.kOffset;
 
-    public GripperSubsystem(int intakeMotorPort, int rotationMotorPort, int rotationEncoderID, boolean isIntakeInverted,
+    private static GripperSubsystem instance;
+
+    private GripperSubsystem(int intakeMotorPort, int rotationMotorPort, boolean isIntakeInverted,
             boolean isRotationInverted) {
         intakeMotor = new TalonFX(intakeMotorPort);
         intakeMotorConfig = new TalonFXConfiguration();
@@ -50,14 +54,23 @@ public class GripperSubsystem extends SubsystemBase {
         rotationMotor.configure(rotationMotorConfig, SparkMax.ResetMode.kResetSafeParameters,
                 PersistMode.kPersistParameters);
 
-        rotationMotorEncoder = new CANcoder(rotationEncoderID);
+        rotationMotorEncoder = rotationMotor.getEncoder();
 
         pidController = new PIDController(kP, kI, kD);
         pidController.setTolerance(2.0);
     }
 
+    public static GripperSubsystem getInstance() {
+        if (instance == null) {
+            instance = new GripperSubsystem(Constants.GripperSystem.INTAKE_MOTOR_PORT,
+                    Constants.GripperSystem.ROTATION_MOTOR_PORT,
+                    Constants.GripperSystem.kIsIntakeInverted, Constants.GripperSystem.kIsRotationInverted);
+        }
+        return instance;
+    }
+
     public double getRotationAngle() {
-        double rawAngle = rotationMotorEncoder.getPosition().getValue().in(Rotation) * 360.0;
+        double rawAngle = rotationMotorEncoder.getPosition() * 360;
         return (rawAngle / Constants.GripperSystem.kGearRatio) + offset;
     }
 
