@@ -12,7 +12,8 @@ public class ShootCommand extends SequentialCommandGroup {
         addCommands(
             new ElevatorCommand(height),
             new GripperShootCommand(gripper).withTimeout(1.2),
-            new ElevatorCommand(ElevatorPosition.L1)
+            new ElevatorCommand(ElevatorPosition.L1),
+            new PreShootCommand()
         );
         
     }

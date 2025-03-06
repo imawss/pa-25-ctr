@@ -8,7 +8,7 @@ public class Constants {
         public static final double kL2Height = 50;
         public static final double kL3Height = 50;
         public static final double kL4Height = 50;
-        public static final double gearCircumference = Math.PI * 4;
+        public static final double gearCircumference = Math.PI * 43.5;
         // BUTTONS
         public static final int resetElevatorButton = 0;
         public static final int L2ButtonID = 0;

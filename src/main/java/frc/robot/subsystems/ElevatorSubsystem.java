@@ -58,8 +58,9 @@ public class ElevatorSubsystem extends SubsystemBase {
     public static ElevatorSubsystem getInstance() {
         if (instance == null) {
             instance = new ElevatorSubsystem(Constants.ElevatorSystem.MASTER_ELEVATOR_MOTOR_PORT,
-                    Constants.ElevatorSystem.SLAVE_ELEVATOR_MOTOR_PORT, false, Constants.ElevatorSystem.kP,
-                    Constants.ElevatorSystem.kI, Constants.ElevatorSystem.kD, Constants.ElevatorSystem.TOP_LIMIT_SWITCH_ID,
+                    Constants.ElevatorSystem.SLAVE_ELEVATOR_MOTOR_PORT, true, Constants.ElevatorSystem.kP,
+                    Constants.ElevatorSystem.kI, Constants.ElevatorSystem.kD,
+                    Constants.ElevatorSystem.TOP_LIMIT_SWITCH_ID,
                     Constants.ElevatorSystem.BOTTOM_LIMIT_SWITCH_ID);
         }
         return instance;
@@ -73,18 +74,18 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
 
     public double getHeight() {
-        return (masterMotorEncoder.getPosition() / Constants.ElevatorSystem.kGearRatio)
-                * Constants.ElevatorSystem.gearCircumference;
+        return (masterMotorEncoder.getPosition() * Constants.ElevatorSystem.gearCircumference * 2
+                / Constants.ElevatorSystem.kGearRatio / 10);
     }
 
-    public void setHeight(double meters) {
-        targetHeight = meters;
+    public void setHeight(double centimeters) {
+        targetHeight = centimeters;
         isElevatorAtZero = false;
     }
 
     public double getSpeed() {
-        return (masterMotorEncoder.getVelocity() / Constants.ElevatorSystem.kGearRatio)
-                * Constants.ElevatorSystem.gearCircumference;
+        return (masterMotorEncoder.getPosition() * Constants.ElevatorSystem.gearCircumference * 2
+                / Constants.ElevatorSystem.kGearRatio / 100);
     }
 
     public void setSpeed(double speed) {
@@ -94,22 +95,19 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     public void periodic() {
         double output = pidController.calculate(masterMotorEncoder.getPosition(), targetHeight);
-    
+
         if (getSpeed() > 0 && topLimitSwitch.get()) {
             masterMotor.set(0);
-            targetHeight = getHeight(); 
-            return;
+            targetHeight = getHeight();
         }
-    
+
         if (getSpeed() < 0 && bottomLimitSwitch.get()) {
             masterMotor.set(0);
             resetElevator();
-            return;
         }
 
         masterMotor.set(output);
     }
-    
 
     public void goToPreset(ElevatorPosition position) {
         setHeight(position.getHeight());
