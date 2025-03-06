@@ -5,7 +5,7 @@ public class Constants {
         // MEAUERMENTS (cm)
         public static final double kGearRatio = 12.5;
         public static final double kL1Height = 20;
-        public static final double kL2Height = 50;
+        public static final double kL2Height = 10;
         public static final double kL3Height = 50;
         public static final double kL4Height = 50;
         public static final double gearCircumference = Math.PI * 43.5;
@@ -20,9 +20,9 @@ public class Constants {
         public static final int TOP_LIMIT_SWITCH_ID = 0;
         public static final int BOTTOM_LIMIT_SWITCH_ID = 0;
         // PID
-        public static final double kP = 0.1;
+        public static final double kP = 0.15;
         public static final double kI = 0;
-        public static final double kD = 0.02;
+        public static final double kD = 0.06;
     }
 
     public class GripperSystem {

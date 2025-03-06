@@ -19,6 +19,7 @@ public class ElevatorCommand extends Command {
     @Override
     public void initialize() {
         elevatorSubsystem.resetElevator();
+        System.out.println("ElevatorCommand initialized.");
     }
 
     // Called every time the scheduler runs while the command is scheduled.

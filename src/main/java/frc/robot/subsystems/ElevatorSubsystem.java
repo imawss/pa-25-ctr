@@ -26,7 +26,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     //DigitalInput bottomLimitSwitch;
     PIDController pidController;
     double targetHeight = 0.0;
-    double maxSpeed = 0.5; 
+    double maxSpeed = 0.4; 
     boolean isElevatorAtZero = true;
 
     private static ElevatorSubsystem instance;

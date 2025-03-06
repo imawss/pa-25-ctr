@@ -10,8 +10,6 @@ import frc.robot.subsystems.GripperSubsystem;
 public class PreShootCommand extends SequentialCommandGroup {
     public PreShootCommand() {
         addCommands(
-            new GripperCommand(GripperPosition.INTAKE),
-            new WaitCommand(0.5),
             new GripperCommand(GripperPosition.SHOOTING),
             new WaitCommand(0.2)
         );
