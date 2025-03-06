@@ -22,10 +22,11 @@ public class ElevatorSubsystem extends SubsystemBase {
     SparkMaxConfig slaveMotorConfig;
     RelativeEncoder masterMotorEncoder;
     RelativeEncoder slaveMotorEncoder;
-    DigitalInput topLimitSwitch;
-    DigitalInput bottomLimitSwitch;
+    //DigitalInput topLimitSwitch;
+    //DigitalInput bottomLimitSwitch;
     PIDController pidController;
     double targetHeight = 0.0;
+    double maxSpeed = 0.5; 
     boolean isElevatorAtZero = true;
 
     private static ElevatorSubsystem instance;
@@ -49,10 +50,11 @@ public class ElevatorSubsystem extends SubsystemBase {
         masterMotorEncoder = masterMotor.getEncoder();
         slaveMotorEncoder = slaveMotor.getEncoder();
 
-        topLimitSwitch = new DigitalInput(topLimitSwitchID);
-        bottomLimitSwitch = new DigitalInput(bottomLimitSwitchID);
+        //topLimitSwitch = new DigitalInput(topLimitSwitchID);
+        //bottomLimitSwitch = new DigitalInput(bottomLimitSwitchID);
 
         pidController = new PIDController(kP, kI, kD);
+        resetElevator();
     }
 
     public static ElevatorSubsystem getInstance() {
@@ -94,8 +96,9 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
 
     public void periodic() {
-        double output = pidController.calculate(masterMotorEncoder.getPosition(), targetHeight);
+        double output = Math.max(-maxSpeed, Math.min(maxSpeed, pidController.calculate(getHeight(), targetHeight)));
 
+        /* 
         if (getSpeed() > 0 && topLimitSwitch.get()) {
             masterMotor.set(0);
             targetHeight = getHeight();
@@ -105,6 +108,7 @@ public class ElevatorSubsystem extends SubsystemBase {
             masterMotor.set(0);
             resetElevator();
         }
+        */
 
         masterMotor.set(output);
     }

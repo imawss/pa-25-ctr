@@ -14,6 +14,7 @@ public class Dashboard {
     }
 
     public void ConfigureShuffleBoard() {
+        @SuppressWarnings("unused")
         ShuffleboardTab tab = Shuffleboard.getTab("Robot");
 
         /**

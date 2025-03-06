@@ -19,12 +19,13 @@ public class ElevatorCommand extends Command {
     @Override
     public void initialize() {
         elevatorSubsystem.resetElevator();
-        elevatorSubsystem.goToPreset(pos);
     }
 
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
+        elevatorSubsystem.goToPreset(pos);
+        System.out.println(elevatorSubsystem.getHeight());
     }
 
     // Called once the command ends or is interrupted.

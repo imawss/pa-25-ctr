@@ -35,7 +35,6 @@ public class GripperSubsystem extends SubsystemBase {
     private final double kD = Constants.GripperSystem.kD;
     private final double minAngle = Constants.GripperSystem.kMinDegree;
     private final double maxAngle = Constants.GripperSystem.kMaxDegree;
-    private final double offset = Constants.GripperSystem.kOffset;
 
     private static GripperSubsystem instance;
 
@@ -50,14 +49,15 @@ public class GripperSubsystem extends SubsystemBase {
         rotationMotor = new SparkMax(rotationMotorPort, MotorType.kBrushless);
         rotationMotorConfig = new SparkMaxConfig();
         rotationMotorConfig.inverted(isRotationInverted);
-        rotationMotorConfig.idleMode(IdleMode.kBrake);
+        rotationMotorConfig.idleMode(IdleMode.kCoast);
         rotationMotor.configure(rotationMotorConfig, SparkMax.ResetMode.kResetSafeParameters,
                 PersistMode.kPersistParameters);
 
         rotationMotorEncoder = rotationMotor.getEncoder();
+        rotationMotorEncoder.setPosition(0);
 
         pidController = new PIDController(kP, kI, kD);
-        pidController.setTolerance(2.0);
+        pidController.setTolerance(1.0);
     }
 
     public static GripperSubsystem getInstance() {
@@ -71,15 +71,15 @@ public class GripperSubsystem extends SubsystemBase {
 
     public double getRotationAngle() {
         double rawAngle = rotationMotorEncoder.getPosition() * 360;
-        return (rawAngle / Constants.GripperSystem.kGearRatio) + offset;
+        return (rawAngle / Constants.GripperSystem.kGearRatio);
     }
 
     public void moveToAngle(double targetAngle) {
         targetAngle = Math.max(minAngle, Math.min(targetAngle, maxAngle));
 
         double currentAngle = getRotationAngle();
-        double targetEncoderAngle = (targetAngle - offset) * Constants.GripperSystem.kGearRatio;
-        double output = pidController.calculate((currentAngle - offset) * Constants.GripperSystem.kGearRatio, targetEncoderAngle);
+        double targetEncoderAngle = (targetAngle) * Constants.GripperSystem.kGearRatio;
+        double output = pidController.calculate((currentAngle) * Constants.GripperSystem.kGearRatio, targetEncoderAngle);
 
         rotationMotor.set(output);
     }
