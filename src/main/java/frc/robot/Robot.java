@@ -14,13 +14,11 @@ import frc.robot.subsystems.ElevatorSubsystem;
 
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
-  private ElevatorSubsystem elevatorSubsystem;
 
   private final RobotContainer m_robotContainer;
 
   public Robot() {
     m_robotContainer = new RobotContainer();
-    elevatorSubsystem = ElevatorSubsystem.getInstance();
   }
 
   @Override
@@ -65,13 +63,11 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.cancel();
     }
     System.out.println("Test");
-    elevatorSubsystem.setHeight(20);
   }
 
   @Override
   public void teleopPeriodic() {
     CommandScheduler.getInstance().run();
-    elevatorSubsystem.periodic();
   }
 
   @Override

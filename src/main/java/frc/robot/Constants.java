@@ -5,8 +5,8 @@ public class Constants {
         // MEAUERMENTS (cm)
         public static final double kGearRatio = 12.5;
         public static final double kL1Height = 20;
-        public static final double kL2Height = 10;
-        public static final double kL3Height = 50;
+        public static final double kL2Height = 20;
+        public static final double kL3Height = 30;
         public static final double kL4Height = 50;
         public static final double gearCircumference = Math.PI * 43.5;
         // BUTTONS
