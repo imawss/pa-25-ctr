@@ -35,6 +35,8 @@ public class GripperSubsystem extends SubsystemBase {
     private final double kD = Constants.GripperSystem.kD;
     private final double minAngle = Constants.GripperSystem.kMinDegree;
     private final double maxAngle = Constants.GripperSystem.kMaxDegree;
+    private final double maxSpeed = 0.2;
+    private double targetAngle = 0.0;
 
     private static GripperSubsystem instance;
 
@@ -69,6 +71,14 @@ public class GripperSubsystem extends SubsystemBase {
         return instance;
     }
 
+    @Override
+    public void periodic() {
+        double currentAngle = getRotationAngle();
+        double targetEncoderAngle = (targetAngle) * Constants.GripperSystem.kGearRatio / 360;
+        double output = Math.max(-maxSpeed, Math.min(maxSpeed, pidController.calculate(currentAngle, targetAngle)));
+        rotationMotor.set(output);
+    }
+
     public double getRotationAngle() {
         double rawAngle = rotationMotorEncoder.getPosition() * 360;
         return (rawAngle / Constants.GripperSystem.kGearRatio);
@@ -78,14 +88,8 @@ public class GripperSubsystem extends SubsystemBase {
         return rotationMotorEncoder.getPosition() / Constants.GripperSystem.kGearRatio;
     }
 
-    public void moveToAngle(double targetAngle) {
-        targetAngle = Math.max(minAngle, Math.min(targetAngle, maxAngle));
-
-        double currentAngle = getRotationTurn();
-        double targetEncoderAngle = (targetAngle) * Constants.GripperSystem.kGearRatio / 360;
-        double output = pidController.calculate(currentAngle, targetEncoderAngle);
-
-        rotationMotor.set(output);
+    public void setAngle(double angle) {
+        targetAngle = angle;
     }
 
     public void setRotationSpeed(double speed) {
@@ -102,11 +106,10 @@ public class GripperSubsystem extends SubsystemBase {
     }
 
     public void goToPreset(GripperPosition position) {
-        moveToAngle(position.getAngle());
+        setAngle(position.getAngle());
     }
 
     public void stop() {
         intakeMotor.set(0);
-        rotationMotor.set(0);
     }
 }

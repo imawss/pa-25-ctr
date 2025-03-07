@@ -5,7 +5,7 @@ public class Constants {
         // MEAUERMENTS (cm)
         public static final double kGearRatio = 12.5;
         public static final double kL1Height = 0;
-        public static final double kL2Height = 20;
+        public static final double kL2Height = 32;
         public static final double kL3Height = 30;
         public static final double kL4Height = 50;
         public static final double gearCircumference = Math.PI * 43.5;
@@ -20,9 +20,9 @@ public class Constants {
         public static final int TOP_LIMIT_SWITCH_ID = 0;
         public static final int BOTTOM_LIMIT_SWITCH_ID = 0;
         // PID
-        public static final double kP = 0.15;
+        public static final double kP = 0.11;
         public static final double kI = 0;
-        public static final double kD = 0.06;
+        public static final double kD = 0.062;
     }
 
     public class GripperSystem {
@@ -30,7 +30,7 @@ public class Constants {
         public static final double kGearRatio = 50;
         public static final double kMaxDegree = 132;
         public static final double kIntakeRotation = 0;
-        public static final double kShootingRotation = 16;
+        public static final double kShootingRotation = -30;
         public static final double kMinDegree = 0;
         public static final double gearCircumference = Math.PI * 4;
         // BUTTONS
@@ -40,10 +40,10 @@ public class Constants {
         public static final int ManuelShootID = 0; // trigger buttons
         // IDs
         public static final int INTAKE_MOTOR_PORT = 13;
-        public static final int ROTATION_MOTOR_PORT = 14;
+        public static final int ROTATION_MOTOR_PORT = 62;
         public static final int LIMIT_SWITCH_ID = 44;
         //PID
-        public static final double kP = 0;
+        public static final double kP = 0.05;
         public static final double kI = 0;
         public static final double kD = 0;
         //boolean
@@ -52,7 +52,7 @@ public class Constants {
     }
 
     public class OI {
-        public static final int kDriverControllerPort = 1;
-        public static final int kOperatorControllerPort = 0;
+        public static final int kDriverControllerPort = 0;
+        public static final int kOperatorControllerPort = 1;
     }
 }

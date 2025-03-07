@@ -18,24 +18,19 @@ public class GripperControlCommand extends Command {
     @Override
     public void execute() {
         if (joystick.getLeftBumperButton()) {           
-            gripperSubsystem.setIntakeSpeed(-0.1);
+            gripperSubsystem.setIntakeSpeed(-0.2);
         } else if (joystick.getRightBumperButton()) {
-            gripperSubsystem.setIntakeSpeed(0.1);
+            gripperSubsystem.setIntakeSpeed(0.2);
         } else {
             gripperSubsystem.stop();
         }
-
-        switch(joystick.getPOV()){
-            case 0:
-                gripperSubsystem.goToPreset(GripperPosition.SHOOTING);
-                break;
-            case 180:
-                gripperSubsystem.goToPreset(GripperPosition.INTAKE);
-                break;
-            default:
-                break;
+        gripperSubsystem.periodic();
+        if(joystick.getPOV() == 0){
+            gripperSubsystem.goToPreset(GripperPosition.SHOOTING);
+        } else if(joystick.getPOV() == 180){
+            gripperSubsystem.goToPreset(GripperPosition.INTAKE);
         }
-            
+        System.out.println("Gripper Angle: " + gripperSubsystem.getRotationAngle());
         
     }
 

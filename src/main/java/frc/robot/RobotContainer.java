@@ -27,7 +27,7 @@ import frc.robot.subsystems.GripperSubsystem;
 public class RobotContainer {
         private static final double MAX_SPEED = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts
                                                                                                     // desired top speed
-        private static final double MAX_ANGULAR_RATE = RotationsPerSecond.of(0.0008).in(RadiansPerSecond); // 3/4 of a
+        private static final double MAX_ANGULAR_RATE = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a
                                                                                                            // rotation
                                                                                                            // per second
                                                                                                            // max
@@ -59,7 +59,7 @@ public class RobotContainer {
         private final SendableChooser<Command> autoChooser;
 
         public RobotContainer() {
-                autoChooser = AutoBuilder.buildAutoChooser("Tests");
+                autoChooser = AutoBuilder.buildAutoChooser("Taxi");
                 configureBindings();
         }
 
@@ -67,12 +67,11 @@ public class RobotContainer {
                 // Note that X is defined as forward according to WPILib convention,
                 // and Y is defined as to the left according to WPILib convention.
                 drivetrain.setDefaultCommand(
-                                drivetrain.applyRequest(() -> {
-                                        return drive.withVelocityX(driverJoystick.getLeftY() * MAX_SPEED)
-                                                        .withVelocityY(driverJoystick.getLeftX() * MAX_SPEED)
-                                                        .withRotationalRate(
-                                                                        driverJoystick.getRightX() * MAX_ANGULAR_RATE);
-                                }));
+                        drivetrain.applyRequest(() -> {
+                            return drive.withVelocityX(driverJoystick.getLeftY() * MAX_SPEED)
+                                    .withVelocityY(driverJoystick.getLeftX() * MAX_SPEED)
+                                    .withRotationalRate(-driverJoystick.getHID().getRawAxis(4) * MAX_ANGULAR_RATE);
+                        }));
 
                 driverJoystick.square().whileTrue(drivetrain.applyRequest(() -> brake));
                 driverJoystick.circle().whileTrue(drivetrain.applyRequest(

@@ -21,28 +21,13 @@ public class ElevatorControlCommand extends Command {
     }
 
     @Override
-    public void execute() {
-        double upwardSpeed = joystick.getRightTriggerAxis();
-        double downwardSpeed = joystick.getLeftTriggerAxis();
-        
-        if (upwardSpeed > TRIGGER_THRESHOLD) {
-            elevator.setSpeed(upwardSpeed * MAX_SPEED);
-            lastTargetHeight = elevator.getHeight();
-        } else if (downwardSpeed > TRIGGER_THRESHOLD) {
-            elevator.setSpeed(-downwardSpeed * MAX_SPEED);
-            lastTargetHeight = elevator.getHeight();
-        } else {
-            elevator.setHeight(lastTargetHeight); 
-        }
-        
+    public void execute() { 
         if (joystick.getAButtonPressed()) {
             elevator.goToPreset(ElevatorPosition.L1);
         } else if (joystick.getXButtonPressed()) {
             elevator.goToPreset(ElevatorPosition.L2);
         } else if (joystick.getYButtonPressed()) {
             elevator.goToPreset(ElevatorPosition.L3);
-        } else if (joystick.getBButtonPressed()) {
-            elevator.goToPreset(ElevatorPosition.L4);
         }
     }
 
