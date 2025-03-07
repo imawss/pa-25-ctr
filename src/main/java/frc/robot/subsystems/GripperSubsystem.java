@@ -74,12 +74,16 @@ public class GripperSubsystem extends SubsystemBase {
         return (rawAngle / Constants.GripperSystem.kGearRatio);
     }
 
+    public double getRotationTurn() {
+        return rotationMotorEncoder.getPosition() / Constants.GripperSystem.kGearRatio;
+    }
+
     public void moveToAngle(double targetAngle) {
         targetAngle = Math.max(minAngle, Math.min(targetAngle, maxAngle));
 
-        double currentAngle = getRotationAngle();
-        double targetEncoderAngle = (targetAngle) * Constants.GripperSystem.kGearRatio;
-        double output = pidController.calculate((currentAngle) * Constants.GripperSystem.kGearRatio, targetEncoderAngle);
+        double currentAngle = getRotationTurn();
+        double targetEncoderAngle = (targetAngle) * Constants.GripperSystem.kGearRatio / 360;
+        double output = pidController.calculate(currentAngle, targetEncoderAngle);
 
         rotationMotor.set(output);
     }

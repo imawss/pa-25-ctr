@@ -4,7 +4,7 @@ public class Constants {
     public class ElevatorSystem {
         // MEAUERMENTS (cm)
         public static final double kGearRatio = 12.5;
-        public static final double kL1Height = 20;
+        public static final double kL1Height = 0;
         public static final double kL2Height = 20;
         public static final double kL3Height = 30;
         public static final double kL4Height = 50;

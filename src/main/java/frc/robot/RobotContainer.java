@@ -9,6 +9,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
@@ -16,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.commands.ElevatorCommand;
 import frc.robot.commands.ElevatorControlCommand;
+import frc.robot.commands.GripperControlCommand;
 import frc.robot.commands.ShootCommand;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -99,8 +101,12 @@ public class RobotContainer {
                 elevatorSubsystem.setDefaultCommand(
                                 new ElevatorControlCommand(
                                                 elevatorSubsystem,
-                                                operatorJoystick.getHID(),
-                                                1));
+                                                operatorJoystick.getHID()));
+
+                gripperSubsystem.setDefaultCommand(
+                                new GripperControlCommand(
+                                                gripperSubsystem,
+                                                operatorJoystick.getHID()));
         }
 
         public Command getAutonomousCommand() {
