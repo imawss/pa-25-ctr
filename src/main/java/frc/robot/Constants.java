@@ -30,7 +30,7 @@ public class Constants {
         public static final double kGearRatio = 50;
         public static final double kMaxDegree = 132;
         public static final double kIntakeRotation = 0;
-        public static final double kShootingRotation = -30;
+        public static final double kShootingRotation = -35;
         public static final double kMinDegree = 0;
         public static final double gearCircumference = Math.PI * 4;
         // BUTTONS
@@ -45,14 +45,14 @@ public class Constants {
         //PID
         public static final double kP = 0.05;
         public static final double kI = 0;
-        public static final double kD = 0;
+        public static final double kD = 0.02;
         //boolean
         public static final boolean kIsIntakeInverted = false;
         public static final boolean kIsRotationInverted = false;
     }
 
     public class OI {
-        public static final int kDriverControllerPort = 0;
-        public static final int kOperatorControllerPort = 1;
+        public static final int kDriverControllerPort = 1;
+        public static final int kOperatorControllerPort = 0;
     }
 }
