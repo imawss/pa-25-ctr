@@ -23,7 +23,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     RelativeEncoder masterMotorEncoder;
     RelativeEncoder slaveMotorEncoder;
     //DigitalInput topLimitSwitch;
-    //DigitalInput bottomLimitSwitch;
+    DigitalInput bottomLimitSwitch;
     PIDController pidController;
     double targetHeight = 0.0;
     double maxSpeed = 0.4; 
@@ -51,7 +51,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         slaveMotorEncoder = slaveMotor.getEncoder();
 
         //topLimitSwitch = new DigitalInput(topLimitSwitchID);
-        //bottomLimitSwitch = new DigitalInput(bottomLimitSwitchID);
+        bottomLimitSwitch = new DigitalInput(bottomLimitSwitchID);
 
         pidController = new PIDController(kP, kI, kD);
         resetElevator();
@@ -98,17 +98,11 @@ public class ElevatorSubsystem extends SubsystemBase {
     public void periodic() {
         double output = Math.max(-maxSpeed, Math.min(maxSpeed, pidController.calculate(getHeight(), targetHeight)));
 
-        /* 
-        if (getSpeed() > 0 && topLimitSwitch.get()) {
-            masterMotor.set(0);
-            targetHeight = getHeight();
-        }
-
         if (getSpeed() < 0 && bottomLimitSwitch.get()) {
+            System.out.println("Elevator is at the bottom");
             masterMotor.set(0);
             resetElevator();
         }
-        */
 
         masterMotor.set(output);
     }

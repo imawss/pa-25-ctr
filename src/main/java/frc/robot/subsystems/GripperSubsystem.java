@@ -59,7 +59,7 @@ public class GripperSubsystem extends SubsystemBase {
         rotationMotorEncoder.setPosition(0);
 
         pidController = new PIDController(kP, kI, kD);
-        pidController.setTolerance(1.0);
+        pidController.setTolerance(0.5);
     }
 
     public static GripperSubsystem getInstance() {
@@ -76,6 +76,11 @@ public class GripperSubsystem extends SubsystemBase {
         double currentAngle = getRotationAngle();
         double targetEncoderAngle = (targetAngle) * Constants.GripperSystem.kGearRatio / 360;
         double output = Math.max(-maxSpeed, Math.min(maxSpeed, pidController.calculate(currentAngle, targetAngle)));
+
+        if (Math.abs(currentAngle - targetAngle) > pidController.getPositionTolerance()) {
+            setIntakeSpeed(-0.05); 
+        }
+    
         rotationMotor.set(output);
     }
 
